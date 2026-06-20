@@ -4,7 +4,21 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>startup-crm-lite</title>
+    <title>Startup CRM Lite</title>
+    <!-- Anti-FOUC: apply saved theme before React renders to prevent flash -->
+    <script>
+      try {
+        var theme = localStorage.getItem('startup-crm-theme');
+        if (theme === 'true') {
+          // Saved preference: dark
+          document.documentElement.classList.add('dark');
+        } else if (theme === null && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          // No saved preference — respect OS/browser system theme
+          document.documentElement.classList.add('dark');
+        }
+        // If theme === 'false', light mode is already the default — no class needed
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

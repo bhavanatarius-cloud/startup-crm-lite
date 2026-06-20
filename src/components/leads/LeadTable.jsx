@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Mail, Phone, Pencil, Trash2, Calendar, Tag } from 'lucide-react';
 import StatusBadge from './StatusBadge';
@@ -25,12 +26,12 @@ const getInitials = (name) => {
  */
 const getAvatarStyle = (name) => {
   const styles = [
-    'bg-blue-50 text-blue-600 border border-blue-100',
-    'bg-green-50 text-green-600 border border-green-100',
-    'bg-purple-50 text-purple-600 border border-purple-100',
-    'bg-amber-50 text-amber-600 border border-amber-100',
-    'bg-rose-50 text-rose-600 border border-rose-100',
-    'bg-indigo-50 text-indigo-600 border border-indigo-100',
+    'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/30',
+    'bg-green-50 dark:bg-green-950/40 text-green-600 dark:text-green-400 border border-green-100 dark:border-green-900/30',
+    'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/30',
+    'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30',
+    'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/30',
+    'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/30',
   ];
   if (!name) return styles[0];
   let hash = 0;
@@ -70,40 +71,40 @@ const formatDate = (dateString) => {
  * @param {Function} props.onDelete - Callback function invoked on delete click.
  * @returns {React.JSX.Element} The rendered LeadTable component.
  */
-export default function LeadTable({ leads, onEdit, onDelete }) {
+const LeadTable = memo(function LeadTable({ leads, onEdit, onDelete }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-slate-100">
-          <thead className="bg-slate-50/50">
+        <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
+          <thead className="bg-slate-50/50 dark:bg-slate-700/30">
             <tr>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 Name
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 Company
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 Status
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 Email
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 Source
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 Date Added
               </th>
-              <th scope="col" className="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-right text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50 bg-white">
+          <tbody className="divide-y divide-slate-50 dark:divide-slate-700/50 bg-white dark:bg-slate-800">
             {leads.length > 0 ? (
               leads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-slate-50/50 transition-colors duration-200">
+                <tr key={lead.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-700/20 transition-colors duration-200">
                   {/* Name column */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
@@ -111,19 +112,19 @@ export default function LeadTable({ leads, onEdit, onDelete }) {
                         {getInitials(lead.name)}
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-slate-900 leading-tight">
+                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight">
                           {lead.name}
                         </span>
                         {lead.phone && (
-                          <span className="text-[10px] text-slate-400 font-medium md:hidden flex items-center gap-1 mt-0.5">
-                            <Phone className="w-2.5 h-2.5" /> {lead.phone}
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium md:hidden flex items-center gap-1 mt-0.5">
+                            <Phone className="w-2.5 h-2.5 text-slate-400 dark:text-slate-500" /> {lead.phone}
                           </span>
                         )}
                       </div>
                     </div>
                   </td>
                   {/* Company column */}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-600 dark:text-slate-300">
                     {lead.company}
                   </td>
                   {/* Status column */}
@@ -131,31 +132,31 @@ export default function LeadTable({ leads, onEdit, onDelete }) {
                     <StatusBadge status={lead.status} />
                   </td>
                   {/* Email column */}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                     {lead.email ? (
-                      <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-1.5 hover:text-blue-600 transition-colors">
-                        <Mail className="w-3.5 h-3.5 text-slate-400" />
+                      <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-1.5 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                        <Mail className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                         {lead.email}
                       </a>
                     ) : (
-                      <span className="text-slate-400 italic">No email</span>
+                      <span className="text-slate-400 dark:text-slate-500 italic">No email</span>
                     )}
                   </td>
                   {/* Source column */}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-350">
                     {lead.source ? (
                       <span className="inline-flex items-center gap-1.5 font-medium">
-                        <Tag className="w-3.5 h-3.5 text-slate-400" />
+                        <Tag className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                         {lead.source}
                       </span>
                     ) : (
-                      <span className="text-slate-400">N/A</span>
+                      <span className="text-slate-400 dark:text-slate-500">N/A</span>
                     )}
                   </td>
                   {/* Date Added column */}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-450">
                     <span className="inline-flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                      <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                       {formatDate(lead.dateAdded)}
                     </span>
                   </td>
@@ -164,7 +165,7 @@ export default function LeadTable({ leads, onEdit, onDelete }) {
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => onEdit(lead)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                        className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                         aria-label={`Edit lead ${lead.name}`}
                         title="Edit Lead"
                       >
@@ -172,7 +173,7 @@ export default function LeadTable({ leads, onEdit, onDelete }) {
                       </button>
                       <button
                         onClick={() => onDelete(lead.id)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/20"
+                        className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/20"
                         aria-label={`Delete lead ${lead.name}`}
                         title="Delete Lead"
                       >
@@ -184,11 +185,11 @@ export default function LeadTable({ leads, onEdit, onDelete }) {
               ))
             ) : (
               <tr>
-                <td colSpan={7} className="px-6 py-10 text-center text-sm text-slate-400">
+                <td colSpan={7} className="px-6 py-10 text-center text-sm text-slate-400 dark:text-slate-500">
                   <div className="flex flex-col items-center justify-center gap-2">
-                    <span className="text-lg">📂</span>
-                    <p className="font-semibold text-slate-500">No leads match the filters</p>
-                    <p className="text-xs text-slate-400">Try adjusting your search query or status filter.</p>
+                    <span className="text-lg">ðŸ“‚</span>
+                    <p className="font-semibold text-slate-500 dark:text-slate-400">No leads match the filters</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">Try adjusting your search query or status filter.</p>
                   </div>
                 </td>
               </tr>
@@ -198,7 +199,7 @@ export default function LeadTable({ leads, onEdit, onDelete }) {
       </div>
     </div>
   );
-}
+});
 
 LeadTable.propTypes = {
   leads: PropTypes.arrayOf(
@@ -216,3 +217,5 @@ LeadTable.propTypes = {
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
+
+export default LeadTable;

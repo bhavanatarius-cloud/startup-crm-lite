@@ -1,15 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
 @import "tailwindcss";
-:root{
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CRITICAL FIX: Tailwind v4 defaults to media-query dark mode.
+   This directive enables CLASS-BASED dark mode so that adding/removing the
+   `.dark` class on <html> (which ThemeContext does) activates all dark: variants.
+   Without this line, every single dark: class in the codebase is ignored.
+───────────────────────────────────────────────────────────────────────────── */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Design Tokens ─────────────────────────────────────────────────── */
+:root {
   --font-blackops: "Black Ops One", system-ui;
+  --font-sans: "Inter", system-ui, sans-serif;
+
   --color-primary: #2563EB;
   --color-success: #22C55E;
   --color-warning: #F59E0B;
-  --color-danger: #EF4444;
+  --color-danger:  #EF4444;
 
+  /* Light mode surface tokens */
   --color-background: #F8FAFC;
-  --color-card: #FFFFFF;
+  --color-card:       #FFFFFF;
+  --color-text-dark:  #0F172A;
+  --color-text-gray:  #64748B;
 
-  --color-text-dark: #0F172A;
-  --color-text-gray: #64748B;
+  /* Chart tokens – light */
+  --chart-grid:            #f1f5f9;
+  --chart-axis:            #94a3b8;
+  --chart-axis-light:      #cbd5e1;
+  --chart-tooltip-cursor:  #f1f5f9;
 }
+
+/* Dark mode overrides */
+.dark {
+  --color-background: #0F172A;
+  --color-card:       #1E293B;
+  --color-text-dark:  #F1F5F9;
+  --color-text-gray:  #94A3B8;
+
+  /* Chart tokens – dark */
+  --chart-grid:            #334155;
+  --chart-axis:            #64748b;
+  --chart-axis-light:      #475569;
+  --chart-tooltip-cursor:  #1e293b;
+}
+
+/* ── Smooth Theme Transition ───────────────────────────────────────── */
+/* Apply a gentle color transition on the root so theme switching feels
+   fluid. Kept only on color properties to avoid interfering with transforms,
+   opacity animations, or layout transitions. */
+html {
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Propagate smooth color transitions to primary structural elements */
+body,
+#root,
+aside,
+header,
+main,
+nav {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.25s ease;
+}
+
+/* ── Shimmer animation (used by skeleton loaders) ─────────────────── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+

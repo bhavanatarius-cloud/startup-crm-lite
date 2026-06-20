@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
-
-const STATUS_OPTIONS = ['New', 'Contacted', 'Meeting Scheduled', 'Proposal Sent', 'Won', 'Lost'];
-const SOURCE_OPTIONS = ['Website', 'Referral', 'LinkedIn', 'Cold Call', 'Email Campaign', 'Other'];
+import { STATUS_OPTIONS, SOURCE_OPTIONS } from '../../constants';
 
 /**
  * LeadForm Component
@@ -15,7 +13,7 @@ const SOURCE_OPTIONS = ['Website', 'Referral', 'LinkedIn', 'Cold Call', 'Email C
  * @param {Function} props.onCancel - Callback function invoked on cancel click.
  * @returns {React.JSX.Element} The rendered LeadForm component.
  */
-export default function LeadForm({ initialData, onSubmit, onCancel }) {
+const LeadForm = memo(function LeadForm({ initialData, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -30,6 +28,7 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
   // Sync state if initialData is provided/modified (useful when component is reused)
   useEffect(() => {
     if (initialData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         name: initialData.name || '',
         company: initialData.company || '',
@@ -99,10 +98,10 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-slate-700" noValidate>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-slate-700 dark:text-slate-200" noValidate>
       {/* Name Input */}
       <div>
-        <label htmlFor="lead-name" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+        <label htmlFor="lead-name" className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
           Full Name <span className="text-red-500">*</span>
         </label>
         <input
@@ -111,10 +110,10 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          className={`w-full rounded-xl border px-3.5 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 ${
+          className={`w-full rounded-xl border px-3.5 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 ${
             errors.name
-              ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
-              : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500/20'
+              ? 'border-red-300 dark:border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
+              : 'border-slate-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500/20'
           }`}
           placeholder="e.g. Tony Stark"
           required
@@ -128,7 +127,7 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
 
       {/* Company Input */}
       <div>
-        <label htmlFor="lead-company" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+        <label htmlFor="lead-company" className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
           Company Name <span className="text-red-500">*</span>
         </label>
         <input
@@ -137,10 +136,10 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
           name="company"
           value={formData.company}
           onChange={handleChange}
-          className={`w-full rounded-xl border px-3.5 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 ${
+          className={`w-full rounded-xl border px-3.5 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 ${
             errors.company
-              ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
-              : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500/20'
+              ? 'border-red-300 dark:border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
+              : 'border-slate-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500/20'
           }`}
           placeholder="e.g. Stark Industries"
           required
@@ -154,7 +153,7 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
 
       {/* Email Input */}
       <div>
-        <label htmlFor="lead-email" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+        <label htmlFor="lead-email" className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
           Email Address <span className="text-red-500">*</span>
         </label>
         <input
@@ -163,10 +162,10 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className={`w-full rounded-xl border px-3.5 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 ${
+          className={`w-full rounded-xl border px-3.5 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 ${
             errors.email
-              ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
-              : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500/20'
+              ? 'border-red-300 dark:border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
+              : 'border-slate-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500/20'
           }`}
           placeholder="e.g. tony@stark.com"
           required
@@ -180,7 +179,7 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
 
       {/* Phone Input */}
       <div>
-        <label htmlFor="lead-phone" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+        <label htmlFor="lead-phone" className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
           Phone Number
         </label>
         <input
@@ -189,7 +188,7 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
           name="phone"
           value={formData.phone}
           onChange={handleChange}
-          className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+          className="w-full rounded-xl border border-slate-200 dark:border-slate-600 px-3.5 py-2.5 text-sm transition-all focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 focus:outline-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500"
           placeholder="e.g. (555) 019-2834"
         />
       </div>
@@ -198,7 +197,7 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Status Dropdown */}
         <div>
-          <label htmlFor="lead-status" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+          <label htmlFor="lead-status" className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
             Status Stage
           </label>
           <div className="relative">
@@ -207,23 +206,23 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none bg-white appearance-none cursor-pointer"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-600 px-3.5 py-2.5 text-sm transition-all focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 focus:outline-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 appearance-none cursor-pointer"
             >
               {STATUS_OPTIONS.map((status) => (
-                <option key={status} value={status}>
+                <option key={status} value={status} className="dark:bg-slate-800">
                   {status}
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-              <span className="text-xs">▼</span>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 dark:text-slate-500">
+              <span className="text-xs">â–¼</span>
             </div>
           </div>
         </div>
 
         {/* Source Dropdown */}
         <div>
-          <label htmlFor="lead-source" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+          <label htmlFor="lead-source" className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
             Lead Source
           </label>
           <div className="relative">
@@ -232,27 +231,27 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
               name="source"
               value={formData.source}
               onChange={handleChange}
-              className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none bg-white appearance-none cursor-pointer"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-600 px-3.5 py-2.5 text-sm transition-all focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 focus:outline-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 appearance-none cursor-pointer"
             >
               {SOURCE_OPTIONS.map((source) => (
-                <option key={source} value={source}>
+                <option key={source} value={source} className="dark:bg-slate-800">
                   {source}
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-              <span className="text-xs">▼</span>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 dark:text-slate-500">
+              <span className="text-xs">â–¼</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Buttons Footer */}
-      <div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-4 mt-2">
+      <div className="flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-700 pt-4 mt-2">
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all cursor-pointer focus:outline-none"
+          className="px-4 py-2.5 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-xl transition-all cursor-pointer focus:outline-none"
         >
           Cancel
         </button>
@@ -265,7 +264,7 @@ export default function LeadForm({ initialData, onSubmit, onCancel }) {
       </div>
     </form>
   );
-}
+});
 
 LeadForm.propTypes = {
   initialData: PropTypes.shape({
@@ -279,3 +278,5 @@ LeadForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 };
+
+export default LeadForm;

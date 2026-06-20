@@ -18,19 +18,19 @@ export default function StatusBadge({ status }) {
     
     switch (normalized) {
       case 'new':
-        return 'bg-slate-100 text-slate-700 border-slate-200';
+        return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-350 border-slate-200 dark:border-slate-700';
       case 'contacted':
-        return 'bg-blue-50 text-blue-700 border-blue-100';
+        return 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-100 dark:border-blue-900/30';
       case 'meeting scheduled':
-        return 'bg-amber-50 text-amber-700 border-amber-100';
+        return 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-900/30';
       case 'proposal sent':
-        return 'bg-purple-50 text-purple-700 border-purple-100';
+        return 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 border-purple-100 dark:border-purple-900/30';
       case 'won':
-        return 'bg-green-50 text-green-700 border-green-100';
+        return 'bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-400 border-green-100 dark:border-green-900/30';
       case 'lost':
-        return 'bg-red-50 text-red-700 border-red-100';
+        return 'bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border-red-100 dark:border-red-900/30';
       default:
-        return 'bg-slate-50 text-slate-600 border-slate-200';
+        return 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-450 border-slate-200 dark:border-slate-700';
     }
   };
 

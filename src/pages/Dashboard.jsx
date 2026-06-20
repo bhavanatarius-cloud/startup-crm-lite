@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useCallback } from 'react';
+import { useLeads } from '../context/LeadContext';
 import { Users, DollarSign, Percent, XCircle, Calendar } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -19,24 +20,6 @@ import QuickActions from '../components/dashboard/QuickActions';
  */
 
 /**
- * Initial sample leads database.
- * Real data integration will be performed in Phase 8.
- * @type {Lead[]}
- */
-const INITIAL_SAMPLE_LEADS = [
-  { id: 1, name: 'Alice Johnson', company: 'Acme Corp', status: 'Won', dateAdded: '2026-06-15T10:00:00Z', value: 12000 },
-  { id: 2, name: 'Bob Smith', company: 'Initech', status: 'Proposal', dateAdded: '2026-06-14T14:30:00Z', value: 8500 },
-  { id: 3, name: 'Charlie Brown', company: 'Snoopy Inc', status: 'Contacted', dateAdded: '2026-06-12T09:15:00Z', value: 4500 },
-  { id: 4, name: 'Diana Prince', company: 'Wayne Enterprises', status: 'New', dateAdded: '2026-06-15T16:45:00Z', value: 15000 },
-  { id: 5, name: 'Evan Wright', company: 'Stark Industries', status: 'Qualified', dateAdded: '2026-06-11T11:20:00Z', value: 22000 },
-  { id: 6, name: 'Fiona Gallagher', company: 'Patsy\'s Pies', status: 'Lost', dateAdded: '2026-06-08T08:00:00Z', value: 3000 },
-  { id: 7, name: 'George Costanza', company: 'Vandelay Industries', status: 'Contacted', dateAdded: '2026-06-13T17:10:00Z', value: 6000 },
-  { id: 8, name: 'Hannah Abbott', company: 'Leaky Cauldron', status: 'Won', dateAdded: '2026-06-05T13:40:00Z', value: 9500 },
-  { id: 9, name: 'Ian Malcolm', company: 'Jurassic Park', status: 'Proposal', dateAdded: '2026-06-10T15:30:00Z', value: 35000 },
-  { id: 10, name: 'Julia Roberts', company: 'Pretty Woman Ltd', status: 'New', dateAdded: '2026-06-16T02:00:00Z', value: 11000 },
-];
-
-/**
  * Dashboard Component
  * Assembles and displays the primary user dashboard for Startup CRM Lite.
  * Shows high-level statistics, pipeline stage distribution, a list of recent leads,
@@ -45,42 +28,46 @@ const INITIAL_SAMPLE_LEADS = [
  * @returns {React.JSX.Element} The rendered Dashboard page.
  */
 export default function Dashboard() {
-  const [leads, setLeads] = useState(INITIAL_SAMPLE_LEADS);
+  const { leads, setLeads } = useLeads();
 
   // Dynamic calculations for Stats Cards
-  const totalLeads = leads.length;
-  
-  // Pipeline Value (Sum of all active, non-lost leads value)
-  const totalValue = leads
-    .filter(lead => lead.status !== 'Lost')
-    .reduce((sum, lead) => sum + lead.value, 0);
-
-  // Won Deals count
-  const wonCount = leads.filter(lead => lead.status === 'Won').length;
-
-  // Lost Deals count
-  const lostCount = leads.filter(lead => lead.status === 'Lost').length;
-
-  // Conversion rate (Percentage of Won deals relative to total leads)
-  const conversionRate = totalLeads > 0 ? ((wonCount / totalLeads) * 100).toFixed(1) : '0.0';
+  const { totalLeads, totalValue, lostCount, conversionRate } = useMemo(() => {
+    const total = leads.length;
+    const value = leads
+      .filter((lead) => lead && lead.status !== 'Lost')
+      .reduce((sum, lead) => sum + lead.value, 0);
+    const won = leads.filter((lead) => lead && lead.status === 'Won').length;
+    const lost = leads.filter((lead) => lead && lead.status === 'Lost').length;
+    
+    return {
+      totalLeads: total,
+      totalValue: value,
+      lostCount: lost,
+      conversionRate: total > 0 ? ((won / total) * 100).toFixed(1) : '0.0',
+    };
+  }, [leads]);
 
   // Format monetary value
-  const formattedValue = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(totalValue);
+  const formattedValue = useMemo(() => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(totalValue);
+  }, [totalValue]);
 
   // Get current date string
-  const currentDateString = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const currentDateString = useMemo(() => {
+    return new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }, []);
 
   // Action Callbacks
-  const handleAddLead = () => {
+  const handleAddLead = useCallback(() => {
     // Generate a simple mock lead to show interactivity
     const mockLeadNames = [
       'Peter Parker (Web Slinger)',
@@ -113,11 +100,11 @@ export default function Dashboard() {
         fontSize: '14px',
       },
     });
-  };
+  }, [setLeads]);
 
-  const handleViewAllLeads = () => {
+  const handleViewAllLeads = useCallback(() => {
     toast(`Redirecting to Leads Management...`, {
-      icon: '👁️',
+      icon: 'ðŸ‘ï¸',
       style: {
         borderRadius: '12px',
         background: '#334155',
@@ -125,11 +112,11 @@ export default function Dashboard() {
         fontSize: '14px',
       },
     });
-  };
+  }, []);
 
-  const handleExportData = () => {
+  const handleExportData = useCallback(() => {
     toast.success(`Exporting ${leads.length} leads as CSV...`, {
-      icon: '📥',
+      icon: 'ðŸ“¥',
       style: {
         borderRadius: '12px',
         background: '#334155',
@@ -137,36 +124,36 @@ export default function Dashboard() {
         fontSize: '14px',
       },
     });
-  };
+  }, [leads.length]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
       {/* Toast Notification Provider */}
       <Toaster position="top-right" reverseOrder={false} />
 
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8">
         
         {/* Header Section */}
-        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-6 md:mb-8">
           <div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Dashboard
             </h1>
-            <p className="text-sm text-slate-500 font-medium mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5 sm:mt-1">
               Welcome back! Here is a summary of your sales funnel and recent pipeline activity.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 self-start md:self-auto bg-white border border-slate-200/80 rounded-xl px-4 py-2 shadow-xs transition-all duration-300">
-            <Calendar className="w-4 h-4 text-blue-600" />
-            <span className="text-xs font-semibold text-slate-600">
+          <div className="flex items-center gap-2 self-start sm:self-auto bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 rounded-xl px-3 sm:px-4 py-2 shadow-xs transition-all duration-300">
+            <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+            <span className="text-[10px] sm:text-xs font-semibold text-slate-600 dark:text-slate-300">
               {currentDateString}
             </span>
           </div>
         </header>
 
-        {/* Stats Grid */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Stats Grid â€” 1 col mobile, 2 col tablet, 4 col desktop */}
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8">
           <StatsCard
             title="Total Leads"
             value={totalLeads}
@@ -197,16 +184,11 @@ export default function Dashboard() {
           />
         </section>
 
-        {/* Bottom Details Grid */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-          {/* Main Content Area */}
-          <div className="lg:col-span-2 flex flex-col gap-6">
-            <PipelineOverview leads={leads} />
-            <RecentLeads leads={leads} />
-          </div>
-
-          {/* Sidebar Area */}
-          <div className="lg:col-span-1">
+        {/* Bottom Details Grid â€” stacked on mobile/tablet, 2 col on desktop */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-start">
+          <PipelineOverview leads={leads} />
+          <RecentLeads leads={leads} />
+          <div className="lg:col-span-2">
             <QuickActions
               onAddLead={handleAddLead}
               onViewAllLeads={handleViewAllLeads}

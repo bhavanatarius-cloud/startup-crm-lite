@@ -1,185 +1,110 @@
-
 /**
- * @typedef {Object} Lead
- * @property {string|number} id - Unique identifier for the lead.
- * @property {string} name - Name of the lead.
- * @property {string} company - Company name.
- * @property {string} status - Current pipeline status of the lead.
- * @property {string} dateAdded - ISO format date string when the lead was added.
+ * RecentLeads Component â€” with full dark mode support.
  */
 
-/**
- * @typedef {Object} RecentLeadsProps
- * @property {Lead[]} leads - The list of all active leads.
- */
-
-/**
- * Maps lead status to modern, colorful Tailwind classes for the status badges.
- * @param {string} status - The lead status.
- * @returns {string} Tailwind CSS class string.
- */
 const getStatusBadgeStyle = (status) => {
-  if (!status) return 'bg-slate-50 text-slate-700 border-slate-100';
-  const normalized = status.trim().toLowerCase();
-  switch (normalized) {
-    case 'new':
-      return 'bg-blue-50/80 text-blue-700 border border-blue-100';
-    case 'contacted':
-      return 'bg-amber-50/80 text-amber-700 border border-amber-100';
-    case 'qualified':
-      return 'bg-indigo-50/80 text-indigo-700 border border-indigo-100';
-    case 'proposal':
-      return 'bg-purple-50/80 text-purple-700 border border-purple-100';
-    case 'won':
-      return 'bg-green-50/80 text-green-700 border border-green-100';
-    case 'lost':
-      return 'bg-red-50/80 text-red-700 border border-red-100';
-    default:
-      return 'bg-slate-50/80 text-slate-700 border border-slate-100';
+  if (!status) return 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-600';
+  const n = status.trim().toLowerCase();
+  switch (n) {
+    case 'new':       return 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40';
+    case 'contacted': return 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-100 dark:border-amber-900/40';
+    case 'qualified': return 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900/40';
+    case 'proposal':  return 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-100 dark:border-purple-900/40';
+    case 'won':       return 'bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 border border-green-100 dark:border-green-900/40';
+    case 'lost':      return 'bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 border border-red-100 dark:border-red-900/40';
+    default:          return 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-600';
   }
 };
 
-/**
- * Extracts initials from the lead's name.
- * @param {string} name - Full name of the lead.
- * @returns {string} The computed initials (up to 2 chars).
- */
 const getInitials = (name) => {
   if (!name) return '?';
-  return name
-    .trim()
-    .split(/\s+/)
-    .map((word) => word[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
+  return name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 };
 
-/**
- * Generates an aesthetic background/text class combination for the user avatar based on initials hash.
- * @param {string} name - Full name of the lead.
- * @returns {string} Tailwind CSS class string.
- */
 const getAvatarStyle = (name) => {
   const styles = [
-    'bg-blue-50 text-blue-600 border border-blue-100',
-    'bg-green-50 text-green-600 border border-green-100',
-    'bg-purple-50 text-purple-600 border border-purple-100',
-    'bg-amber-50 text-amber-600 border border-amber-100',
-    'bg-rose-50 text-rose-600 border border-rose-100',
-    'bg-indigo-50 text-indigo-600 border border-indigo-100',
+    'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
+    'bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-300 border border-green-100 dark:border-green-900/40',
+    'bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-300 border border-purple-100 dark:border-purple-900/40',
+    'bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-300 border border-amber-100 dark:border-amber-900/40',
+    'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-300 border border-rose-100 dark:border-rose-900/40',
+    'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900/40',
   ];
   if (!name) return styles[0];
   let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % styles.length;
-  return styles[index];
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return styles[Math.abs(hash) % styles.length];
 };
 
-/**
- * Formats ISO date string to a human-readable format.
- * @param {string} dateString - ISO format date.
- * @returns {string} Formatted date (e.g. "Jun 16, 2026").
- */
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
   try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  } catch {
-    return dateString;
-  }
+    return new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch { return dateString; }
 };
 
-/**
- * RecentLeads Component
- * Retrieves, sorts, and renders the latest 5 leads in an elegant table layout.
- *
- * @param {RecentLeadsProps} props - The component props.
- * @returns {React.JSX.Element} The rendered RecentLeads component.
- */
 export default function RecentLeads({ leads = [] }) {
-  // Sort leads by date added in descending order and slice the top 5
   const recentLeads = [...leads]
     .sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime())
     .slice(0, 5);
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between h-full">
+    <div className="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between h-full transition-colors duration-200">
       <div>
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">Recent Leads</h3>
-            <p className="text-xs text-slate-500">The latest additions to your pipeline</p>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Recent Leads</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">The latest additions to your pipeline</p>
           </div>
-          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-50 text-slate-400">
+          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-50 dark:bg-slate-700 text-slate-400 dark:text-slate-400">
             Last 5
           </span>
         </div>
 
-        <div className="overflow-x-auto -mx-6">
-          <div className="inline-block min-w-full align-middle px-6">
-            <div className="overflow-hidden">
-              <table className="min-w-full divide-y divide-slate-100">
-                <thead>
-                  <tr>
-                    <th scope="col" className="py-3.5 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Name
+        <div className="overflow-x-auto -mx-4 sm:-mx-6">
+          <div className="inline-block min-w-full align-middle px-4 sm:px-6">
+            <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
+              <thead>
+                <tr>
+                  {['Name', 'Company', 'Status', 'Date Added'].map((h) => (
+                    <th key={h} scope="col" className="py-3.5 text-left text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                      {h}
                     </th>
-                    <th scope="col" className="py-3.5 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Company
-                    </th>
-                    <th scope="col" className="py-3.5 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th scope="col" className="py-3.5 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Date Added
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {recentLeads.length > 0 ? (
-                    recentLeads.map((lead) => (
-                      <tr key={lead.id} className="hover:bg-slate-50/50 transition-colors duration-200">
-                        <td className="py-3 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${getAvatarStyle(lead.name)}`}>
-                              {getInitials(lead.name)}
-                            </div>
-                            <span className="text-sm font-semibold text-slate-900">
-                              {lead.name}
-                            </span>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50 dark:divide-slate-700/50">
+                {recentLeads.length > 0 ? (
+                  recentLeads.map((lead) => (
+                    <tr key={lead.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors duration-150">
+                      <td className="py-3 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${getAvatarStyle(lead.name)}`}>
+                            {getInitials(lead.name)}
                           </div>
-                        </td>
-                        <td className="py-3 whitespace-nowrap text-sm text-slate-600">
-                          {lead.company}
-                        </td>
-                        <td className="py-3 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusBadgeStyle(lead.status)}`}>
-                            {lead.status}
-                          </span>
-                        </td>
-                        <td className="py-3 whitespace-nowrap text-sm text-slate-500">
-                          {formatDate(lead.dateAdded)}
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={4} className="py-8 text-center text-sm text-slate-400">
-                        No recent leads found.
+                          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">{lead.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">{lead.company}</td>
+                      <td className="py-3 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusBadgeStyle(lead.status)}`}>
+                          {lead.status}
+                        </span>
+                      </td>
+                      <td className="py-3 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                        {formatDate(lead.dateAdded)}
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-sm text-slate-400 dark:text-slate-500">
+                      No recent leads found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
